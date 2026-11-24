@@ -19,3 +19,31 @@ jobs:
           pnpm --filter @ct3a/www... install --frozen-lockfile
           pnpm --filter @ct3a/www build
           grep -Fq "Stackloom" www/.vercel/output/static/index.html
+          python3 -m http.server 4431 --directory www/.vercel/output/static >/tmp/preview.log 2>&1 &
+          curl --retry 15 --retry-all-errors --retry-delay 1 -fsSL http://localhost:4431/ -o /tmp/portfolio-home.html
+          npm install --prefix "$RUNNER_TEMP/site-check" --no-audit --no-fund playwright-core@1.65.1
+          cat > "$RUNNER_TEMP/site-check/check.cjs" <<'JS'
+          const { chromium } = require("playwright-core");
+          (async () => {
+            const browser = await chromium.launch({ executablePath: "/usr/bin/google-chrome", headless: true });
+            try {
+              const page = await browser.newPage();
+              const errors = [];
+              page.on("pageerror", err => errors.push(err.message));
+              for (const width of [1440, 390]) {
+                await page.setViewportSize({ width, height: 900 });
+                await page.goto("http://localhost:4431/", { waitUntil: "domcontentloaded" });
+                await page.locator("body").waitFor();
+                if (!(await page.title()).includes("Stackloom") && !(await page.locator("body").innerText()).includes("Stackloom")) throw Error("Missing site identity");
+                await page.screenshot({ path: process.env.RUNNER_TEMP + "/site-" + width + ".png", animations: "disabled" });
+              }
+              if (errors.length) throw Error(errors.join("\n"));
+            } finally { await browser.close(); }
+          })().catch(err => { console.error(err); process.exitCode = 1; });
+          JS
+          node "$RUNNER_TEMP/site-check/check.cjs"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site-previews
+          path: ${{ runner.temp }}/site-*.png
+          retention-days: 14
