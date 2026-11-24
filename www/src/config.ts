@@ -1,5 +1,5 @@
 export const SITE = {
-  title: "Create T3 App",
+  title: "Stackloom | T3 stack guide",
   description: "The best way to start a full-stack, typesafe Next.js app.",
   defaultLanguage: "en_US",
 };
@@ -7,7 +7,7 @@ export const SITE = {
 export const OPEN_GRAPH = {
   image: {
     src: "images/og-image.png",
-    alt: "Create T3 App: The best way to start a full-stack, typesafe Next.js app.",
+    alt: "Stackloom: The best way to start a full-stack, typesafe Next.js app.",
   },
   twitter: "t3dotgg",
 };

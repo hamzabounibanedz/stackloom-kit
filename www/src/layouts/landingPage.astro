@@ -28,6 +28,7 @@ const { isNotFound } = Astro.props;
 <html dir="ltr" lang="en-us" class={`initial ${isNotFound ? "not-found" : ""}`}>
   <head>
     <HeadCommon />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" />
     <HeadSeo type="website" />
     <title>{SITE.title}</title>
 
@@ -43,7 +44,7 @@ const { isNotFound } = Astro.props;
     </script>
   </head>
   <body
-    class="min-h-screen bg-gradient-to-b from-gray-900 via-[#300171] to-slate-900"
+    class="min-h-screen bg-gradient-to-b from-[#23182d] via-[#40294f] to-[#201727]"
   >
     <JumpToContent />
     <div
