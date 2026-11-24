@@ -12,10 +12,10 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: "22"
       - name: Verify the application
         run: |
           npm i -g pnpm@10.8.0
           pnpm --filter @ct3a/www... install --frozen-lockfile
           pnpm --filter @ct3a/www build
-          grep -Fq "Stackloom" www/dist/index.html
+          grep -Fq "Stackloom" www/.vercel/output/static/index.html
